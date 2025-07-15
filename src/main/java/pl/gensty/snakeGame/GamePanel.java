@@ -1,12 +1,19 @@
 package pl.gensty.snakeGame;
 
+import pl.gensty.DifficultySelector;
 import pl.gensty.enums.Difficulty;
 import pl.gensty.snakeGame.apple.Apple;
-import pl.gensty.snakeGame.apple.AppleFactory;
+import pl.gensty.snakeGame.apple.AppleCreator;
 import pl.gensty.snakeGame.apple.ApplePositioner;
 import pl.gensty.snakeGame.apple.appleBasic.AppleBasicFactory;
+import pl.gensty.snakeGame.displayer.DisplayerApple;
+import pl.gensty.snakeGame.displayer.Displayer;
+import pl.gensty.snakeGame.displayer.DisplayerSnake;
 import pl.gensty.snakeGame.keyHandler.SnakeKeyHandler;
 import pl.gensty.snakeGame.snake.Snake;
+import pl.gensty.snakeGame.snake.SnakeCollisionChecker;
+import pl.gensty.snakeGame.snake.SnakeMover;
+import pl.gensty.snakeGame.snake.SnakeWrapHandler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,16 +21,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 
-import static pl.gensty.snakeGame.GameConfigSnake.*;
-import static pl.gensty.enums.Difficulty.*;
+import static pl.gensty.snakeGame.SettingsSnake.*;
 
 public class GamePanel extends JPanel implements ActionListener {
-    private final ApplePositioner applePositioner = new ApplePositioner();
-    private final AppleFactory appleFactory = new AppleBasicFactory();
+    private final SnakeMover mover = new SnakeMover();
+    private final SnakeCollisionChecker collisionChecker = new SnakeCollisionChecker();
+    private final SnakeWrapHandler wrapHandler = new SnakeWrapHandler();
+    private final AppleCreator appleCreator = new AppleCreator(new ApplePositioner(), new AppleBasicFactory());
+    private final Displayer<Snake> snakeDisplayer = new DisplayerSnake();
+    private final Displayer<Apple> appleDisplayer = new DisplayerApple();
+
+    private SettingsSnake settings;
 
     private Apple apple;
     private Snake snake;
-    private boolean wrapEnabled;
     private int applesEaten;
     boolean running = false;
     Timer timer;
@@ -43,7 +54,7 @@ public class GamePanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(running) {
-            snake.move();
+            move();
             checkApple();
             checkCollisions();
         }
@@ -56,8 +67,9 @@ public class GamePanel extends JPanel implements ActionListener {
         }
 
         chooseDifficulty();
+
         snake = new Snake();
-        apple = createApple();
+        apple = appleCreator.createApple(snake);
         applesEaten = 0;
         running = true;
         this.addKeyListener(new SnakeKeyHandler(snake, running, this::startGame));
@@ -66,77 +78,34 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     private void chooseDifficulty() {
-        Difficulty[] options = {EASY, MEDIUM, HARD};
-        int choice = JOptionPane.showOptionDialog(
-                null,
-                "Choose level difficulty:",
-                "Snake",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.INFORMATION_MESSAGE,
-                null,
-                options,
-                options[0]
-        );
+        Difficulty difficulty = DifficultySelector.chooseDifficulty();
+        settings = SettingsSnake.from(difficulty);
 
-        int delay;
-        switch (choice) {
-            case 1 -> { // MEDIUM
-                wrapEnabled = true;
-                delay = BASE_DELAY - 15;
-            }
-            case 2 -> { // HARD
-                wrapEnabled = false;
-                delay = BASE_DELAY - 25;
-            }
-            default -> { // EASY (domyślnie)
-                wrapEnabled = true;
-                delay = BASE_DELAY;
-            }
-        }
-
-        timer = new Timer(delay, this);
+        timer = new Timer(settings.getDelay(), this);
     }
 
-    private Apple createApple() {
-        Point point = applePositioner.findFreePosition(snake);
-        return appleFactory.createApple(point);
+    private void move() {
+        mover.move(snake);
     }
 
     private void checkApple() {
-        if((snake.getHead().getX() == apple.getPoint().getX()) && (snake.getHead().getY() == apple.getPoint().getY())) {
+        if((snake.getHead().equals(apple.getPoint()))) {
             snake.grow();
             applesEaten++;
-            apple = createApple();
+            apple = appleCreator.createApple(snake);
         }
     }
 
     private void checkCollisions() {
-        if (snake.checkSelfCollision()) {
+        if (collisionChecker.checkSelfCollision(snake)) {
             running = false;
+            return;
         }
 
-        if (!wrapEnabled) {
-            if (snake.isOutOfBounds()) {
-                running = false;
-            }
-        }
-
-        if (wrapEnabled) {
-            if (snake.getHead().x < 0) {
-                snake.getHead().x = SCREEN_WIDTH - UNIT_SIZE;
-            } else if (snake.getHead().x >= SCREEN_WIDTH) {
-                snake.getHead().x = 0;
-            }
-
-            if (snake.getHead().y < 0) {
-                snake.getHead().y = SCREEN_HEIGHT - UNIT_SIZE;
-            } else if (snake.getHead().y >= SCREEN_HEIGHT) {
-                snake.getHead().y = 0;
-            }
-        } else {
-            if (snake.getHead().x < 0 || snake.getHead().x >= SCREEN_WIDTH || snake.getHead().y < 0 || snake.getHead().y >= SCREEN_HEIGHT) {
-                running = false;
-            }
+        if (settings.wrapEnabled()) {
+            wrapHandler.applyWrap(snake);
+        } else if (collisionChecker.isOutOfBounds(snake)) {
+            running = false;
         }
     }
 
@@ -165,13 +134,13 @@ public class GamePanel extends JPanel implements ActionListener {
 
     private void displayApple(Graphics g) {
         if (apple != null) {
-            apple.render(g);
+            appleDisplayer.display(g, apple);
         }
     }
 
     private void displaySnake(Graphics g) {
         if (snake != null) {
-            snake.render(g);
+            snakeDisplayer.display(g, snake);
         }
     }
 

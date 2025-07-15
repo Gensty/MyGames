@@ -12,6 +12,4 @@ public abstract class Apple {
     public Point getPoint() {
         return point;
     }
-
-    public abstract void render(Graphics g);
 }

@@ -5,7 +5,7 @@ import pl.gensty.snakeGame.snake.Snake;
 import java.awt.*;
 import java.util.Random;
 
-import static pl.gensty.snakeGame.GameConfigSnake.*;
+import static pl.gensty.snakeGame.SettingsSnake.*;
 
 public class ApplePositioner {
     private final Random random = new Random();
