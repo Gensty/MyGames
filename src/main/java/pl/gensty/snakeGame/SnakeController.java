@@ -58,7 +58,7 @@ public class SnakeController {
         if (isAppleEaten()) {
             snake.grow();
             score++;
-            appleCreator.createApple(snake);
+            apple = appleCreator.createApple(snake);
         }
     }
 
