@@ -8,12 +8,13 @@ public class SettingsSnake {
     public static final int UNIT_SIZE = 25;
 
     private final int delay;
-    private final boolean wrapEnabled;
+    private boolean wrapEnabled;
 
-    private SettingsSnake(int delay, boolean wrapEnabled) {
+    public SettingsSnake(int delay, boolean wrapEnabled) {
         this.delay = delay;
         this.wrapEnabled = wrapEnabled;
     }
+
 
     public static SettingsSnake from(Difficulty difficulty) {
         return switch (difficulty) {
