@@ -1,12 +1,13 @@
-package pl.gensty.snakeGame.displayer;
+package pl.gensty.snakeGame.apple.displayer;
 
+import pl.gensty.Displayer;
 import pl.gensty.snakeGame.apple.Apple;
 
 import java.awt.*;
 
-import static pl.gensty.snakeGame.SettingsSnake.*;
+import static pl.gensty.snakeGame.Settings.*;
 
-public class DisplayerApple implements Displayer<Apple> {
+public class BasicAppleDisplayer implements Displayer<Apple> {
     @Override
     public void display(Graphics g, Apple apple) {
         g.setColor(Color.RED);

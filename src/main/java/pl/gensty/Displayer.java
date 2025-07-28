@@ -1,4 +1,4 @@
-package pl.gensty.snakeGame.displayer;
+package pl.gensty;
 
 import java.awt.*;
 

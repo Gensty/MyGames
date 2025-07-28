@@ -12,4 +12,8 @@ public abstract class Apple {
     public Point getPoint() {
         return point;
     }
+
+    public int getScorePoints() {
+        return 0;
+    }
 }

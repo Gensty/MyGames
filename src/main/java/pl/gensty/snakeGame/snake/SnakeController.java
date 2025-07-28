@@ -1,5 +1,6 @@
-package pl.gensty.snakeGame;
+package pl.gensty.snakeGame.snake;
 
+import pl.gensty.snakeGame.Settings;
 import pl.gensty.snakeGame.apple.Apple;
 import pl.gensty.snakeGame.apple.AppleCreator;
 import pl.gensty.snakeGame.snake.Snake;
@@ -13,13 +14,13 @@ public class SnakeController {
     private final SnakeCollisionChecker collisionChecker;
     private final SnakeWrapHandler wrapHandler;
     private final AppleCreator appleCreator;
-    private final SettingsSnake settings;
+    private final Settings settings;
     private Apple apple;
     private int score = 0;
     private boolean running = false;
 
 
-    public SnakeController(SettingsSnake settings,
+    public SnakeController(Settings settings,
                            Snake snake,
                            SnakeMover mover,
                            SnakeCollisionChecker collisionChecker,
@@ -57,7 +58,7 @@ public class SnakeController {
 
         if (isAppleEaten()) {
             snake.grow();
-            score++;
+            score += apple.getScorePoints();
             apple = appleCreator.createApple(snake);
         }
     }

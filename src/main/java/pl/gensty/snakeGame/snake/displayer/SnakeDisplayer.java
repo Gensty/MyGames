@@ -1,13 +1,14 @@
-package pl.gensty.snakeGame.displayer;
+package pl.gensty.snakeGame.snake.displayer;
 
+import pl.gensty.Displayer;
 import pl.gensty.snakeGame.snake.Snake;
 
 import java.awt.*;
 import java.util.List;
 
-import static pl.gensty.snakeGame.SettingsSnake.*;
+import static pl.gensty.snakeGame.Settings.*;
 
-public class DisplayerSnake implements Displayer<Snake> {
+public class SnakeDisplayer implements Displayer<Snake> {
     @Override
     public void display(Graphics g, Snake snake) {
         List<Point> body = snake.getBody();

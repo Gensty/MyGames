@@ -6,7 +6,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static pl.gensty.snakeGame.SettingsSnake.*;
+import static pl.gensty.snakeGame.Settings.*;
 import static pl.gensty.enums.Direction.*;
 
 public class Snake {

@@ -1,6 +1,6 @@
 package pl.gensty.snakeGame.snake;
 
-import static pl.gensty.snakeGame.SettingsSnake.*;
+import static pl.gensty.snakeGame.Settings.*;
 
 public class SnakeWrapHandler {
     public void applyWrap(Snake snake) {

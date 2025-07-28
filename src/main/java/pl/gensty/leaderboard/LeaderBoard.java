@@ -1,4 +1,4 @@
-package pl.gensty;
+package pl.gensty.leaderboard;
 
 import java.util.ArrayList;
 import java.util.List;

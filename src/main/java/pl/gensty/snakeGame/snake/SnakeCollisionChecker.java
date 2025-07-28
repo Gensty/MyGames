@@ -2,7 +2,7 @@ package pl.gensty.snakeGame.snake;
 
 import java.awt.*;
 
-import static pl.gensty.snakeGame.SettingsSnake.*;
+import static pl.gensty.snakeGame.Settings.*;
 
 public class SnakeCollisionChecker {
     public SnakeCollisionChecker() {

@@ -1,4 +1,6 @@
-package pl.gensty.snakeGame.apple;
+package pl.gensty.snakeGame.apple.factory;
+
+import pl.gensty.snakeGame.apple.Apple;
 
 import java.awt.*;
 
